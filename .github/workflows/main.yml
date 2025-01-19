@@ -1,0 +1,67 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # This triggers the workflow when you push a tag starting with "v"
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Run your build step to generate files
+      - name: Build Plugin
+        run: |
+          npm install
+          npm run build # Replace with your actual build command
+          zip -r obsidian-fold-properties-by-default.zip main.js manifest.json
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          body: "Automatically created release for tag ${{ github.ref_name }}."
+          draft: false
+          prerelease: false
+
+      # Upload the zip file
+      - name: Upload Release Asset (Zip)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./obsidian-fold-properties-by-default.zip  # Path to the .zip file
+          asset_name: obsidian-fold-properties-by-default.zip    # Name of the file in the release
+          asset_content_type: application/zip
+
+      # Upload main.js
+      - name: Upload Release Asset (main.js)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./main.js  # Path to the main.js file
+          asset_name: main.js    # Name of the file in the release
+          asset_content_type: application/javascript
+
+      # Upload manifest.json
+      - name: Upload Release Asset (manifest.json)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./manifest.json  # Path to the manifest.json file
+          asset_name: manifest.json    # Name of the file in the release
+          asset_content_type: application/json
