@@ -4,7 +4,7 @@ export default class FoldPropertiesByDefault extends Plugin {
 
 	// fold properties function
 	foldProperties() {
-		app.commands.executeCommandById('editor:toggle-fold-properties')
+		this.app.commands.executeCommandById('editor:toggle-fold-properties')
 	}
 
 	async onload() {
