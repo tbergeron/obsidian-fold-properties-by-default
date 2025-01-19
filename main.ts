@@ -11,9 +11,11 @@ declare module 'obsidian' {
 
 export default class FoldPropertiesByDefault extends Plugin {
 	foldProperties() {
+		console.warn('Folding properties')
 		this.app.commands.executeCommandById('editor:toggle-fold-properties')
 	}
+
 	async onload() {
-		this.registerEvent(this.app.workspace.on("file-open", this.foldProperties.bind(this)))
+		this.registerEvent(this.app.workspace.on('file-open', this.foldProperties.bind(this)))
 	}
 }
