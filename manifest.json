@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-fold-properties-by-default",
 	"name": "Fold Properties By Default",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"minAppVersion": "0.15.0",
 	"description": "Fold properties by default.",
 	"author": "Tommy Bergeron",
