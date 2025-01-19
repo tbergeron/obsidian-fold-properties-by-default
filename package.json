@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-fold-properties-by-default",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Fold Properties By Default",
 	"main": "main.js",
 	"scripts": {
