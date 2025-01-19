@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-fold-properties-by-default",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Always have editor/metadata properties folded by default.",
 	"main": "main.js",
 	"scripts": {
