@@ -5,7 +5,7 @@
 	"minAppVersion": "0.15.0",
 	"description": "Fold properties by default.",
 	"author": "Tommy Bergeron",
-	"authorUrl": "https://x.com/buildwithtom",
+	"authorUrl": "https://github.com/tbergeron",
 	"fundingUrl": "https://www.paypal.com/donate/?hosted_button_id=93Z9BUUD778SG",
 	"isDesktopOnly": false
 }

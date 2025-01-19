@@ -4,11 +4,12 @@ export default class FoldPropertiesByDefault extends Plugin {
 
 	// fold properties function
 	foldProperties() {
-		this.app.commands.executeCommandById('editor:toggle-fold-properties')
+		const commands = (this.app as any).commands;
+		commands.executeCommandById('editor:toggle-fold-properties')
 	}
 
 	async onload() {
 		// call foldProperties when a file is opened / showed
-		this.registerEvent(this.app.workspace.on("file-open", this.foldProperties.bind(this)));
+		this.registerEvent(this.app.workspace.on("file-open", this.foldProperties.bind(this)))
 	}
 }
