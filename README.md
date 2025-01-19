@@ -1,4 +1,4 @@
-# Obisidna Fold Properties By Default
+# Obsidian Fold Properties By Default
 
 I have seen people on the official forums who have been wanting to have the metadata/frontmatter properties folded by default. I think this should be implemented as a built-in option, but for the time being, I came up with a simple way to achieve the same behavior.
 
