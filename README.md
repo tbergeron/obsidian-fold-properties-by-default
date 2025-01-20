@@ -6,6 +6,9 @@ There are no settings; it basically just checks if the metadata properties are u
 
 **Especially useful to those who want to keep properties out of the way without hiding them entirely.**
 
+# Known issues / potential improvements
+- Properties don't automatically fold when creating a new note which I believe is useful since you might want to enter some before folding them. Don't hesitate to suggest otherwise if that's how you feel like and I might consider implementing an automatic folding feature setting for new notes.
+
 # Installation
 - Go to Obisidian's settings page.
 - Open Community plugins settings page, click on the Browse button.
