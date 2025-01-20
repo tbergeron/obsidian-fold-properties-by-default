@@ -1,6 +1,6 @@
 {
 	"name": "fold-properties-by-default",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"description": "Always have editor/metadata properties folded by default.",
 	"main": "main.js",
 	"scripts": {
