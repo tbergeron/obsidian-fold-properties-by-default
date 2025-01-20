@@ -1,14 +1,22 @@
 import { Plugin } from 'obsidian'
 
+declare module 'obsidian' {
+	interface App {
+		commands: {
+			commands: { [commandId: string]: { id: string, name: string, callback: () => void } }
+			executeCommandById(commandId: string): boolean
+		}
+	}
+}
+
 export default class FoldPropertiesByDefault extends Plugin {
 	foldProperties() {
-		const app = this.app as any
 		const currentLeaf = document.querySelector('.workspace-leaf.mod-active')
 		if (currentLeaf) {
 			const propertiesAreFolded = currentLeaf.querySelector('.metadata-container.is-collapsed')
 			if (!propertiesAreFolded) {
 				console.warn('folding properties')
-				app.commands.executeCommandById('editor:toggle-fold-properties')
+				this.app.commands.executeCommandById('editor:toggle-fold-properties')
 			}
 		}
 	}
