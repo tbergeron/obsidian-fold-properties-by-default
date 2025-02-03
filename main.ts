@@ -15,7 +15,6 @@ export default class FoldPropertiesByDefault extends Plugin {
 		if (currentLeaf) {
 			const propertiesAreFolded = currentLeaf.querySelector('.metadata-container.is-collapsed')
 			if (!propertiesAreFolded) {
-				console.warn('folding properties')
 				this.app.commands.executeCommandById('editor:toggle-fold-properties')
 			}
 		}
