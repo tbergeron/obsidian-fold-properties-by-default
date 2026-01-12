@@ -6,11 +6,25 @@ There are no settings; it basically just checks if the metadata properties are u
 
 **Especially useful to those who want to keep properties out of the way without hiding them entirely.**
 
-# Known issues / potential improvements
+## Known Issues / Potential Improvements
+
 - Properties don't automatically fold when creating a new note which I believe is useful since you might want to enter some before folding them. Don't hesitate to suggest otherwise if that's how you feel like and I might consider implementing an automatic folding feature setting for new notes.
 
-# Installation
-- Go to Obisidian's settings page.
+## Installation
+
+- Go to Obsidian's settings page.
 - Open Community plugins settings page, click on the Browse button.
 - Search for "Fold Properties By Default" in the search bar and find the plugin with this exact name.
 - Click on the Install button.
+
+---
+
+## Updates
+
+### v1.0.9 - Race Condition Fix
+
+Fixed an issue where properties would remain unfolded on some notes. The `file-open` event fires before the DOM is fully rendered, causing the fold command to fail silently. Now uses `MutationObserver` to wait for DOM readiness, plus:
+
+- Added `layout-change` event handler for tab switches
+- Added `onLayoutReady()` wrapper per Obsidian best practices
+- Added `onunload()` cleanup to prevent memory leaks
