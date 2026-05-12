@@ -1,9 +1,9 @@
 name: Create Release
 
-on:
+  on:
   push:
     tags:
-      - 'v*'  # This triggers the workflow when you push a tag starting with "v"
+      - '[0-9]*'  # This triggers the workflow when you push a tag starting with a number
   workflow_dispatch:
 
 jobs:
