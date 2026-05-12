@@ -1,6 +1,6 @@
 name: Create Release
 
-  on:
+on:
   push:
     tags:
       - '[0-9]*'  # This triggers the workflow when you push a tag starting with a number
