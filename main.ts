@@ -1,5 +1,5 @@
 /* global activeDocument */
-import { Plugin } from 'obsidian'
+import { Plugin, TFile } from 'obsidian'
 
 declare module 'obsidian' {
 	interface App {
@@ -11,7 +11,7 @@ declare module 'obsidian' {
 }
 
 export default class FoldPropertiesByDefault extends Plugin {
-	foldProperties() {
+	foldProperties(file: TFile | null) {
 		const currentLeaf = activeDocument.querySelector('.workspace-leaf.mod-active')
 		if (currentLeaf) {
 			const propertiesAreFolded = currentLeaf.querySelector('.metadata-container.is-collapsed')
@@ -22,6 +22,6 @@ export default class FoldPropertiesByDefault extends Plugin {
 	}
 
 	async onload() {
-		this.registerEvent(this.app.workspace.on('file-open', this.foldProperties.bind(this)))
+		this.registerEvent(this.app.workspace.on('file-open', this.foldProperties.bind(this) as (file: TFile | null) => void))
 	}
 }
