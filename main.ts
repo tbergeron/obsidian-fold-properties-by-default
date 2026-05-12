@@ -1,3 +1,4 @@
+/* global activeDocument */
 import { Plugin } from 'obsidian'
 
 declare module 'obsidian' {
@@ -11,7 +12,7 @@ declare module 'obsidian' {
 
 export default class FoldPropertiesByDefault extends Plugin {
 	foldProperties() {
-		const currentLeaf = document.querySelector('.workspace-leaf.mod-active')
+		const currentLeaf = activeDocument.querySelector('.workspace-leaf.mod-active')
 		if (currentLeaf) {
 			const propertiesAreFolded = currentLeaf.querySelector('.metadata-container.is-collapsed')
 			if (!propertiesAreFolded) {
