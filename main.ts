@@ -1,4 +1,3 @@
-/* global activeDocument */
 import { Plugin, TFile } from 'obsidian'
 
 declare module 'obsidian' {
