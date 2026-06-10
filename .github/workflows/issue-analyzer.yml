@@ -1,0 +1,54 @@
+name: Issue Analyzer
+
+on:
+  issues:
+    types: [opened, reopened, edited]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to analyze"
+        required: true
+        type: number
+
+# Least-privilege token: contents read to checkout, issues read to read event payload
+# Manual workflow_dispatch also only uses read operations (GET /repos/*/issues/*).
+permissions:
+  contents: read
+  issues: read
+
+# Prevent redundant runs for the same issue (e.g. rapid edits or re-dispatches)
+concurrency:
+  group: issue-analyzer-${{ github.event.inputs.issue_number || github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.0"
+          cache: "npm"
+      - name: Install dependencies (if needed for native deps)
+        run: npm ci --legacy-peer-deps --ignore-scripts || true
+      - name: Analyze issue and email maintainer-only report
+        run: node scripts/issue-analyzer.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
+          OPENCODE_GO_API_KEY: ${{ secrets.OPENCODE_GO_API_KEY }}
+          SMTP2GO_API_KEY: ${{ secrets.SMTP2GO_API_KEY }}
+          ISSUE_EMAIL_FROM: ${{ secrets.ISSUE_EMAIL_FROM }}
+          ISSUE_EMAIL_TO: ${{ secrets.ISSUE_EMAIL_TO }}
+          ISSUE_ANALYZER_EMAIL_FROM: ${{ secrets.ISSUE_ANALYZER_EMAIL_FROM }}
+          ISSUE_ANALYZER_EMAIL_TO: ${{ secrets.ISSUE_ANALYZER_EMAIL_TO }}
+          ISSUE_ANALYZER_MODE: ${{ github.event_name == 'workflow_dispatch' && 'manual' || 'event' }}
+          ISSUE_ANALYZER_ISSUE_NUMBER: ${{ github.event.inputs.issue_number || github.event.issue.number }}
