@@ -1,0 +1,53 @@
+name: PR Analyzer
+
+on:
+  pull_request_target:
+    types: [opened]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to analyze"
+        required: true
+        type: number
+
+# Read-only: no write/comment/review/mutate operations
+permissions:
+  contents: read
+  pull-requests: read
+
+# Prevent redundant runs for the same PR
+concurrency:
+  group: pr-analyzer-${{ github.event.inputs.pr_number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      # pull_request_target safety: checkout trusted base branch only, never PR head
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
+          fetch-depth: 1
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.0"
+          cache: "npm"
+      - name: Install dependencies (if needed for native deps)
+        run: npm ci --legacy-peer-deps --ignore-scripts || true
+      - name: Analyze PR and email maintainer-only report
+        run: node scripts/pr-analyzer.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
+          OPENCODE_GO_API_KEY: ${{ secrets.OPENCODE_GO_API_KEY }}
+          SMTP2GO_API_KEY: ${{ secrets.SMTP2GO_API_KEY }}
+          ISSUE_EMAIL_FROM: ${{ secrets.ISSUE_EMAIL_FROM }}
+          ISSUE_EMAIL_TO: ${{ secrets.ISSUE_EMAIL_TO }}
+          PR_ANALYZER_MODE: ${{ github.event_name == 'workflow_dispatch' && 'manual' || 'event' }}
+          PR_ANALYZER_PR_NUMBER: ${{ github.event.inputs.pr_number || github.event.pull_request.number }}
