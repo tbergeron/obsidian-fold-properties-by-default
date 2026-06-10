@@ -351,6 +351,37 @@ function describeAiResponse(result) {
   return `finish_reason=${finishReason}; response_keys=${resultKeys}; choice_keys=${choiceKeys}; message_keys=${messageKeys}`;
 }
 
+function formatIssueDate(createdAt) {
+  if (!createdAt) return "unknown";
+
+  const date = new Date(createdAt);
+  if (Number.isNaN(date.getTime())) return "unknown";
+
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  let hour = date.getUTCHours();
+  const minute = String(date.getUTCMinutes()).padStart(2, "0");
+  const suffix = hour >= 12 ? "PM" : "AM";
+  hour %= 12;
+  if (hour === 0) hour = 12;
+
+  return `${year}-${month}-${day} ${hour}:${minute} ${suffix}`;
+}
+
+function formatIssueSubjectDate(createdAt) {
+  if (!createdAt) return "unknown";
+
+  const date = new Date(createdAt);
+  if (Number.isNaN(date.getTime())) return "unknown";
+
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
 async function analyzeIssue(issue, repoContext, repoFullName) {
   const systemMsg = [
     "You are a senior open-source maintainer reviewing a GitHub issue.",
@@ -667,11 +698,14 @@ async function main() {
   // -- Build email ---------------------------------------------------
   // Sanitize title against CR/LF header injection (RFC 5322 §2.1.1 / §3.6.5)
   const safeTitle = issueTitle.slice(0, 200).replace(/[\r\n]/g, "").trim();
-  const subject = `[Issue Analyzer] ${repoFullName} #${issueNumber}: ${safeTitle}`;
+  const issueDate = formatIssueDate(issue.created_at);
+  const issueSubjectDate = formatIssueSubjectDate(issue.created_at);
+  const subject = `[Issue Analyzer] ${repoFullName} #${issueNumber}: ${safeTitle} (${issueSubjectDate})`;
   const emailBody = [
     `Issue #${issueNumber} in ${repoFullName}`,
     `URL: ${issue.html_url || "(not available)"}`,
     `Author: ${(issue.user && issue.user.login) || "unknown"}`,
+    `Date: ${issueDate}`,
     `Action: ${eventAction}`,
     "",
     "Analysis:",
