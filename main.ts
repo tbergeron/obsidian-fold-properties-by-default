@@ -62,7 +62,13 @@ export default class FoldPropertiesByDefault extends Plugin {
 	}
 
 	async onload() {
-		this.registerEvent(this.app.workspace.on('file-open', this.foldProperties.bind(this) as (file: TFile | null) => void))
+		this.app.workspace.onLayoutReady(() => {
+			this.registerEvent(this.app.workspace.on('file-open', this.foldProperties.bind(this) as (file: TFile | null) => void))
+			this.registerEvent(this.app.workspace.on('layout-change', () => {
+				this.foldProperties(this.app.workspace.getActiveFile())
+			}))
+			this.foldProperties(this.app.workspace.getActiveFile())
+		})
 	}
 
 	onunload() {
